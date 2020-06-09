@@ -4,6 +4,7 @@ import './App.css';
 
 function Watch(props) {
     console.log(props);
+    const startStopButtonText = props.isCounting ? "Stop" : "Start";
   return (
     <div className="App">
         <h1 class="display">00:00,00</h1>
@@ -12,7 +13,7 @@ function Watch(props) {
                 <button onClick={props.resetLap} id="reset" class="resetbtn">Reset</button>
             </div>
             <div class="startstop">
-                <button onClick={props.startStop} id="start" class="startbtn">Start</button>
+  <button onClick={props.startStop} id="start" class="startbtn">{startStopButtonText}</button>
             </div>
         </div>
         <div class="laplist" id="laps"></div>
