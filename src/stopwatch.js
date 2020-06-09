@@ -3,7 +3,6 @@ import logo from './logo.svg';
 import './App.css';
 
 function Watch(props) {
-    console.log(props);
     const startStopButtonText = props.isCounting ? "Stop" : "Start";
   return (
     <div className="App">
