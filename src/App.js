@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect} from 'react';
+import React, {useState, useCallback, useEffect, useRef} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Watch from './stopwatch.js';
@@ -7,25 +7,18 @@ function App() {
   let [countingIntervalId, setCountingIntervalId] = useState(null);
   let [lapTimes, setLapTimes] = useState([]);
   let [isCounting, setIsCounting] = useState(false);
-  let [startTime, setStartTime] = useState(null);
+  let startTime = useRef(null);
   let [millisecondsPaused, setMillisecondsPaused] = useState(0);
   let [timerText, setTimerText] = useState('00:00.00');
   let [lastPauseTime, setLastPauseTime] = useState(0);
 
 
   
-  let getShowTime = useCallback(function() {
-    console.log("updating");
-    if (isCounting) {
-      let currentTime = Date.now();
-      const totalTime = currentTime - startTime;
-      console.log(`Current time: ${currentTime}, start time: ${startTime}`)
-      setTimerText(formatTimeForTimer(totalTime));
-    }
-    
-  }, [startTime])
-
-  //useEffect(getShowTime);
+  let getShowTime = function() {
+    let currentTime = Date.now();
+    const totalTime = currentTime - startTime.current;
+    setTimerText(formatTimeForTimer(totalTime));
+  };
 
   const startStop = function() {
     const currentTime = Date.now();
@@ -34,20 +27,20 @@ function App() {
     if (countingIntervalId != null) {
       // stopping
       clearInterval(countingIntervalId);
-      setLastPauseTime(currentTime - startTime);
+      setCountingIntervalId(null);
     } else {
       // starting
-      //(startTime == null) {
-        setStartTime(currentTime+lastPauseTime);
-      //}
+      if (startTime.current == null) {
+        startTime.current = currentTime;
+      }
       
-      setCountingIntervalId(setInterval(getShowTime, 10)) 
+      setCountingIntervalId(setInterval(getShowTime, 10));
     }
   }
 
   return (
     <div className="App">
-      <Watch timerText={timerText} isCounting={isCounting} startStop={startStop} resetLap={resetLap}></Watch>
+      <Watch timerText={timerText} isCounting={isCounting} startStop={startStop} resetLap={resetLap} ></Watch>
     </div>
   );
 }
