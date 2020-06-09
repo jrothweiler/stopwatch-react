@@ -8,15 +8,16 @@ function App() {
   let [lapTimes, setLapTimes] = useState([]);
   let [isCounting, setIsCounting] = useState(false);
   let startTime = useRef(null);
-  let [millisecondsPaused, setMillisecondsPaused] = useState(0);
+  let millisecondsPaused = useRef(0);
   let [timerText, setTimerText] = useState('00:00.00');
   let [lastPauseTime, setLastPauseTime] = useState(0);
+  let [lastStopwatchToggleTime, setLastStopwatchToggleTime] = useState(null);
 
 
   
   let getShowTime = function() {
     let currentTime = Date.now();
-    const totalTime = currentTime - startTime.current;
+    const totalTime = currentTime - startTime.current - millisecondsPaused.current;
     setTimerText(formatTimeForTimer(totalTime));
   };
 
@@ -32,10 +33,15 @@ function App() {
       // starting
       if (startTime.current == null) {
         startTime.current = currentTime;
+      } else {
+        let pauseTime = currentTime - lastStopwatchToggleTime;
+        millisecondsPaused.current += pauseTime;
       }
       
       setCountingIntervalId(setInterval(getShowTime, 10));
     }
+
+    setLastStopwatchToggleTime(currentTime);
   }
 
   return (
