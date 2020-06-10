@@ -5,6 +5,15 @@ import './App.css';
 function Watch(props) {
     const startStopButtonText = props.isCounting ? "Stop" : "Start";
     const resetLapButtonText = props.isCounting ? "Lap" : "Reset";
+    const children = props.lapTimes.map((data, idx) =>{
+        return (
+          <li id={idx}>
+            <label class='left'>Lap {idx}</label>
+            <label class='right'>{data}</label>
+          </li>
+        );
+      })
+
   return (
     <div className="App">
         <h1 class="display">{props.timerText}</h1>
@@ -16,7 +25,7 @@ function Watch(props) {
                 <button onClick={props.startStop} id="start" class="startbtn">{startStopButtonText}</button>
             </div>
         </div>
-        <div class="laplist" id="laps">{props.children}</div>
+        <div class="laplist" id="laps">{children}</div>
     </div>
   );
 }

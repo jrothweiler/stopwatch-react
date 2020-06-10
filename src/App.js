@@ -76,25 +76,18 @@ function App() {
     }
 
     
-    const newContent = {};
-    newContent.lap= laptime;
-    lapTimes.push(newContent);
+    //const newContent = {};
+    //newContent.lap= laptime;
+    lapTimes.push(laptime);
     
 
   }
 
-  const children = lapTimes.map((data, idx) =>{
-    return (
-      <li id={idx}>
-        <label class='left'>Lap {idx}</label>
-        <label class='right'>{data.lap}</label>
-      </li>
-    );
-  })
+ 
   
   return (
     <div className="App">
-      <Watch timerText={timerText} isCounting={isCounting} startStop={startStop} resetLap={resetLap} children={children}></Watch>
+      <Watch timerText={timerText} isCounting={isCounting} startStop={startStop} resetLap={resetLap} lapTimes={lapTimes}></Watch>
     </div>
   );
   
