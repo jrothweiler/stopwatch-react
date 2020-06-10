@@ -12,8 +12,8 @@ function App() {
   let [timerText, setTimerText] = useState('00:00.00');
   let [lastPauseTime, setLastPauseTime] = useState(0);
   let [lastStopwatchToggleTime, setLastStopwatchToggleTime] = useState(null);
-
-
+  let [isInitial, setIsInitial] = useState(true);
+  let [lastLapTime, setLastLapTime] = useState(0);
   
   let getShowTime = function() {
     let currentTime = Date.now();
@@ -44,18 +44,63 @@ function App() {
     setLastStopwatchToggleTime(currentTime);
   }
 
+  const resetLap = function(){
+ 
+    if (countingIntervalId != null) {
+      // lap
+      //alert("lap");
+      logLap();
+    } else {
+      // reset
+      startTime.current = null;
+      setTimerText('00:00.00');
+      setLapTimes([]);
+      setIsInitial(true);
+      setLastLapTime(0);
+    }
+  }
+
+  const logLap = function(){
+    let laptime;
+    let currentTime = Date.now();
+    const totalTime = currentTime - startTime.current;
+  
+      if(isInitial){
+        
+        
+        laptime=formatTimeForTimer(totalTime);
+        //time[index]= totalTime;
+        setLastLapTime(totalTime);
+        setIsInitial(false);
+    }else{
+        //time[index]=difference-lasttime;
+        
+        laptime=formatTimeForTimer(totalTime-lastLapTime);
+        setLastLapTime(totalTime);
+        
+    }
+
+    
+    //const newContent = {};
+    //newContent.lap= laptime;
+    lapTimes.push(laptime);
+    
+
+  }
+
+ 
+  
   return (
     <div className="App">
-      <Watch timerText={timerText} isCounting={isCounting} startStop={startStop} resetLap={resetLap} ></Watch>
+      <Watch timerText={timerText} isCounting={isCounting} startStop={startStop} resetLap={resetLap} lapTimes={lapTimes}></Watch>
     </div>
   );
+  
 }
 
 
 
-function resetLap(){
-  alert("reset");
-}
+
 
 
 // format a number for use in the timer, i.e. pad numbers less than 10 with leading zeroes
