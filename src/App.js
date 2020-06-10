@@ -10,7 +10,6 @@ function App() {
   let startTime = useRef(null);
   let millisecondsPaused = useRef(0);
   let [timerText, setTimerText] = useState('00:00.00');
-  let [lastPauseTime, setLastPauseTime] = useState(0);
   let [lastStopwatchToggleTime, setLastStopwatchToggleTime] = useState(null);
   let [isInitial, setIsInitial] = useState(true);
   let [lastLapTime, setLastLapTime] = useState(0);
@@ -57,6 +56,7 @@ function App() {
       setLapTimes([]);
       setIsInitial(true);
       setLastLapTime(0);
+      millisecondsPaused.current = 0;
     }
   }
 
