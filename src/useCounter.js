@@ -9,11 +9,15 @@ export default function (){
     let lastLapTime = useRef(0);
     let isInitial = useRef(true);
     let [isCounting, setIsCounting] = useState(false);
+    let millisecondsPaused = useRef(0);
+    let millisecondsPausedSinceLastLap = useRef(0);
+    let lastStopwatchToggleTime = useRef(null);
+
     const change = (x) => !x;
     
     let getShowTime = function() {
       let currentTime = Date.now();
-      const totalTime = currentTime - startTime.current;
+      const totalTime = currentTime - startTime.current - millisecondsPaused.current;
       setTimerText(formatTimeForTimer(totalTime));
     };
     
@@ -30,10 +34,15 @@ export default function (){
         // starting
         if (startTime.current == null) {
           startTime.current = currentTime;
+        } else {
+          const pauseTime = currentTime - lastStopwatchToggleTime.current;
+          millisecondsPaused.current += pauseTime;
+          millisecondsPausedSinceLastLap.current += pauseTime;
         }
         
         countingIntervalId.current = setInterval(getShowTime, 10);
       }
+      lastStopwatchToggleTime.current = currentTime;
     }
   
     const resetLap = function(){
@@ -49,13 +58,15 @@ export default function (){
         setLapTimes([]);
         isInitial.current= true;
         lastLapTime.current = 0;
+        millisecondsPaused.current = 0;
+        millisecondsPausedSinceLastLap.current = 0;
       }
     }
   
     const logLap = function(){
       let laptime;
       let currentTime = Date.now();
-      const totalTime = currentTime - startTime.current;
+      const totalTime = currentTime - startTime.current - millisecondsPausedSinceLastLap.current;
     
         if(isInitial.current){
           
