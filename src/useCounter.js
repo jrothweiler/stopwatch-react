@@ -8,8 +8,9 @@ export default function (){
     let [timerText, setTimerText] = useState('00:00.00');
     let lastLapTime = useRef(0);
     let isInitial = useRef(true);
-    let isCounting = useRef(false);
-
+    let [isCounting, setIsCounting] = useState(false);
+    const change = (x) => !x;
+    
     let getShowTime = function() {
       let currentTime = Date.now();
       const totalTime = currentTime - startTime.current;
@@ -18,7 +19,7 @@ export default function (){
     
     const startStop = function() {
       const currentTime = Date.now();
-      isCounting.current = !isCounting;
+      setIsCounting(change);
   
       if (countingIntervalId.current != null) {
         // stopping
@@ -56,7 +57,7 @@ export default function (){
       let currentTime = Date.now();
       const totalTime = currentTime - startTime.current;
     
-        if(isInitial){
+        if(isInitial.current){
           
           
           laptime=formatTimeForTimer(totalTime);
@@ -66,7 +67,7 @@ export default function (){
       }else{
           //time[index]=difference-lasttime;
           
-          laptime=formatTimeForTimer(totalTime-lastLapTime);
+          laptime=formatTimeForTimer(totalTime-lastLapTime.current);
           lastLapTime.current = totalTime;
           
       }
@@ -81,4 +82,6 @@ export default function (){
 
     return { lapTimes, timerText, startStop, resetLap, isCounting}
   }
+
+
 
