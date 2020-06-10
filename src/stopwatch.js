@@ -5,18 +5,17 @@ import './App.css';
 function Watch(props) {
     const startStopButtonText = props.isCounting ? "Stop" : "Start";
     const resetLapButtonText = props.isCounting ? "Lap" : "Reset";
+
+    const toggleButtonColorClass = props.isCounting ? "started" : "stopped"
+    const resetLapButtonDisabled = !props.isCounting && props.timerText === "00:00.00";
   return (
     <div className="App">
-        <h1 class="display">{props.timerText}</h1>
-        <div class="button_container">
-            <div class="resetlap">
-                <button onClick={props.resetLap} id="reset" class="resetbtn">{resetLapButtonText}</button>
-            </div>
-            <div class="startstop">
-  <button onClick={props.startStop} id="start" class="startbtn">{startStopButtonText}</button>
-            </div>
-        </div>
-        <div class="laplist" id="laps"></div>
+      <h1 id="timer">{props.timerText}</h1>
+      <div id="actionButtons">
+          <button id="lapResetButton" disabled={resetLapButtonDisabled} onClick={props.resetLap}>{resetLapButtonText}</button>
+          <button id="toggleButton" className={toggleButtonColorClass} onClick={props.startStop}>{startStopButtonText}</button>
+      </div>
+      <div class="laplist" id="laps"></div>
     </div>
   );
 }
