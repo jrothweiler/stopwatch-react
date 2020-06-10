@@ -13,10 +13,10 @@ function Watch(props) {
                 <button onClick={props.resetLap} id="reset" class="resetbtn">{resetLapButtonText}</button>
             </div>
             <div class="startstop">
-  <button onClick={props.startStop} id="start" class="startbtn">{startStopButtonText}</button>
+                <button onClick={props.startStop} id="start" class="startbtn">{startStopButtonText}</button>
             </div>
         </div>
-        <div class="laplist" id="laps"></div>
+        <div class="laplist" id="laps">{props.children}</div>
     </div>
   );
 }
