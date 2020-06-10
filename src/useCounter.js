@@ -75,7 +75,7 @@ export default function (){
       
       //const newContent = {};
       //newContent.lap= laptime;
-      lapTimes.push(laptime);
+      lapTimes.unshift(laptime);
       
   
     }

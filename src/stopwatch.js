@@ -9,9 +9,10 @@ function Watch() {
     const startStopButtonText = isCounting ? "Stop" : "Start";
     const resetLapButtonText = isCounting ? "Lap" : "Reset";
     const children = lapTimes.map((data, idx) =>{
+        let newidx= lapTimes.length-idx;
         return (
-          <li id={idx}>
-            <label class='left'>Lap {idx}</label>
+          <li id={newidx}>
+            <label class='left'>Lap {newidx++}</label>
             <label class='right'>{data}</label>
           </li>
         );
