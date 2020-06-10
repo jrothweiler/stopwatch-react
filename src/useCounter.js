@@ -10,7 +10,6 @@ export default function (){
     let isInitial = useRef(true);
     let [isCounting, setIsCounting] = useState(false);
     let millisecondsPaused = useRef(0);
-    let millisecondsPausedSinceLastLap = useRef(0);
     let lastStopwatchToggleTime = useRef(null);
 
     const change = (x) => !x;
@@ -37,7 +36,6 @@ export default function (){
         } else {
           const pauseTime = currentTime - lastStopwatchToggleTime.current;
           millisecondsPaused.current += pauseTime;
-          millisecondsPausedSinceLastLap.current += pauseTime;
         }
         
         countingIntervalId.current = setInterval(getShowTime, 10);
@@ -59,14 +57,13 @@ export default function (){
         isInitial.current= true;
         lastLapTime.current = 0;
         millisecondsPaused.current = 0;
-        millisecondsPausedSinceLastLap.current = 0;
       }
     }
   
     const logLap = function(){
       let laptime;
       let currentTime = Date.now();
-      const totalTime = currentTime - startTime.current - millisecondsPausedSinceLastLap.current;
+      const totalTime = currentTime - startTime.current - millisecondsPaused.current;
     
         if(isInitial.current){
           
