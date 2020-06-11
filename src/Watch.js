@@ -10,7 +10,7 @@ function Watch() {
     const children = lapTimes.map((data, idx) =>{
         return (
           <tr key={idx}>
-            <td>Lap {idx}</td>
+            <td>Lap {idx + 1}</td>
             <td>{data}</td>
           </tr>
         );
