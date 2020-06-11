@@ -12,29 +12,40 @@ function Watch() {
     const children = lapTimes.map((data, idx) =>{
         
         let newidx= lapTimes.length-idx;
+        let rowStyle={color: "white"};
+        
         if(findMax(lapTimes)===idx&&lapTimes.length>2){
-          return (
+          rowStyle={color: "red"};
+          /*return (rowObject
             <tr key={newidx} style={{color: "red"}}>
               <td>Lap {newidx++}</td>
               <td>{data}</td>
             </tr>
             
-          );
+          );*/
         }else if(findMin(lapTimes)===idx&&lapTimes.length>2){
-          return (
+          rowStyle={color: "green"};
+          /*return (rowObject
             <tr key={newidx} style={{color: "green"}}>
               <td>Lap {newidx++}</td>
               <td>{data}</td>
             </tr>
-          );
-        }else {
-          return (
+          );*/
+        }/*else {
+          
+          return (rowObject
             <tr key={newidx} style={{color: "white"}}>
               <td>Lap {newidx++}</td>
               <td>{data}</td>
             </tr>
           );
-        }
+        }*/
+
+        let rowObject = <tr key={newidx} style={rowStyle}>
+                          <td>Lap {newidx++}</td>
+                          <td>{data}</td>
+                        </tr>
+        return rowObject;
         
       })
 

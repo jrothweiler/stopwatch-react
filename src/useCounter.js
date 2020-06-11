@@ -11,7 +11,7 @@ export default function (){
     let [isCounting, setIsCounting] = useState(false);
     let millisecondsPaused = useRef(0);
     let lastStopwatchToggleTime = useRef(null);
-    let [className, setClassName] = useState("startbtn");
+    
 
     const change = (x) => !x;
     
@@ -29,7 +29,7 @@ export default function (){
         // stopping
         clearInterval(countingIntervalId.current);
         countingIntervalId.current = null;
-        setClassName('startbtn');
+        
       } else {
         // starting
         if (startTime.current == null) {
@@ -40,7 +40,7 @@ export default function (){
         }
         
         countingIntervalId.current = setInterval(getShowTime, 10);
-        setClassName('stopbtn');
+        
       }
       lastStopwatchToggleTime.current = currentTime;
     }
@@ -85,7 +85,7 @@ export default function (){
   
     }
 
-    return { lapTimes, timerText, startStop, resetLap, isCounting, className}
+    return { lapTimes, timerText, startStop, resetLap, isCounting}
   }
 
 

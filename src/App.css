@@ -23,6 +23,7 @@ body {
   line-height: 200px;
   font-size: 88px;
   font-family: "Helvetica Neue";
+  text-align: center;
 }
 
 #actionButtons {
