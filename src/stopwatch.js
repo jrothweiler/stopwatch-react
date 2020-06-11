@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from './logo.svg';
+
 import './stopwatch.css';
 import useCounter from './useCounter.js';
 import findMax from './findMax.js';
@@ -12,7 +12,7 @@ function Watch() {
     const resetLapButtonText = isCounting ? "Lap" : "Reset";
     const children = lapTimes.map((data, idx) =>{
         let newidx= lapTimes.length-idx;
-        if(findMax(lapTimes)==idx&&lapTimes.length>2){
+        if(findMax(lapTimes)===idx&&lapTimes.length>2){
           return (
             <li id={newidx} style={{color: "red"}}>
               <label className='left'>Lap {newidx++}</label>

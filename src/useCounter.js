@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect, useRef} from 'react';
+import {useState, useRef} from 'react';
 import formatTimeForTimer from './formatTimeForTimer.js';
 
 export default function (){
