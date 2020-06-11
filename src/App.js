@@ -1,5 +1,4 @@
-import React, {useState, useCallback, useEffect, useRef} from 'react';
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
 import Watch from './stopwatch.js';
 
