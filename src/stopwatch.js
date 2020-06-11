@@ -17,19 +17,19 @@ function Watch() {
         );
       })
 
-
   const toggleButtonColorClass = isCounting ? "started" : "stopped"
   const resetLapButtonDisabled = !isCounting && timerText === "00:00.00";
+
   return (
     <div className="App">
       <h1 id="timer">{timerText}</h1>
       <div id="actionButtons">
-          <button id="lapResetButton" disabled={resetLapButtonDisabled} onClick={resetLap}>{resetLapButtonText}</button>
-          <button id="toggleButton" className={toggleButtonColorClass} onClick={startStop}>{startStopButtonText}</button>
+        <button id="lapResetButton" disabled={resetLapButtonDisabled} onClick={resetLap}>{resetLapButtonText}</button>
+        <button id="toggleButton" className={toggleButtonColorClass} onClick={startStop}>{startStopButtonText}</button>
       </div>
       <div id="lapTableDiv">
         <table id="lapTable">
-  <tbody>{children}</tbody>
+          <tbody>{children}</tbody>
         </table>
       </div>
     </div>

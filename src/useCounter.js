@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect, useRef} from 'react';
+import {useState, useRef} from 'react';
 import formatTimeForTimer from './formatTimeForTimer.js';
 
 export default function (){
@@ -43,8 +43,7 @@ export default function (){
       lastStopwatchToggleTime.current = currentTime;
     }
   
-    const resetLap = function(){
-   
+    const resetLap = function() {
       if (countingIntervalId.current != null) {
         // lap
         //alert("lap");
@@ -66,8 +65,6 @@ export default function (){
       const totalTime = currentTime - startTime.current - millisecondsPaused.current;
     
         if(isInitial.current){
-          
-          
           laptime=formatTimeForTimer(totalTime);
           //time[index]= totalTime;
           lastLapTime.current = totalTime;
@@ -77,15 +74,11 @@ export default function (){
           
           laptime=formatTimeForTimer(totalTime-lastLapTime.current);
           lastLapTime.current = totalTime;
-          
       }
   
-      
       //const newContent = {};
       //newContent.lap= laptime;
       lapTimes.push(laptime);
-      
-  
     }
 
     return { lapTimes, timerText, startStop, resetLap, isCounting}
