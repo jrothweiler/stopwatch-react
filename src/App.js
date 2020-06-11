@@ -1,13 +1,11 @@
 import React from 'react';
 import './App.css';
-import Watch from './stopwatch.js';
+import Watch from './Watch';
 
 
 function App() {
   return (
-    <div className="App">
-      <Watch/>
-    </div>
+    <Watch/>
   );
   
 }

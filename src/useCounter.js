@@ -1,19 +1,17 @@
-import {useState, useRef} from 'react';
+import {useState, useRef, useEffect} from 'react';
 import formatTimeForTimer from './formatTimeForTimer.js';
 
-export default function (){
-    let countingIntervalId = useRef(null);
-    let startTime = useRef(null);
+export default function () {
     let [lapTimes, setLapTimes] = useState([]);
     let [timerText, setTimerText] = useState('00:00.00');
+    let [isCounting, setIsCounting] = useState(false);
+
+    let countingIntervalId = useRef(null);
+    let startTime = useRef(null);
     let lastLapTime = useRef(0);
     let isInitial = useRef(true);
-    let [isCounting, setIsCounting] = useState(false);
     let millisecondsPaused = useRef(0);
     let lastStopwatchToggleTime = useRef(null);
-    
-
-    const change = (x) => !x;
     
     let getShowTime = function() {
       let currentTime = Date.now();
@@ -23,7 +21,7 @@ export default function (){
     
     const startStop = function() {
       const currentTime = Date.now();
-      setIsCounting(change);
+      setIsCounting((x) => !x);
   
       if (countingIntervalId.current != null) {
         // stopping
@@ -48,7 +46,6 @@ export default function (){
     const resetLap = function() {
       if (countingIntervalId.current != null) {
         // lap
-        //alert("lap");
         logLap();
       } else {
         // reset
@@ -61,29 +58,26 @@ export default function (){
       }
     }
   
-    const logLap = function(){
+    const logLap = function() {
       let laptime;
       let currentTime = Date.now();
       const totalTime = currentTime - startTime.current - millisecondsPaused.current;
     
-        if(isInitial.current){
+      if(isInitial.current){
           laptime=formatTimeForTimer(totalTime);
           //time[index]= totalTime;
           lastLapTime.current = totalTime;
           isInitial.current = false;
-      }else{
-          //time[index]=difference-lasttime;
-          
+      } else {
           laptime=formatTimeForTimer(totalTime-lastLapTime.current);
           lastLapTime.current = totalTime;
       }
-  
-      //const newContent = {};
-      //newContent.lap= laptime;
-      lapTimes.unshift(laptime);
       
-  
+      lapTimes.unshift(laptime);
     }
+
+    // clean up the interval after unmounting
+    useEffect(() => { clearInterval(countingIntervalId.current) }, []);
 
     return { lapTimes, timerText, startStop, resetLap, isCounting}
   }
