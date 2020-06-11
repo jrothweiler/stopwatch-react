@@ -1,4 +1,4 @@
-import {useState, useRef} from 'react';
+import {useState, useRef, useEffect} from 'react';
 import formatTimeForTimer from './formatTimeForTimer.js';
 
 export default function (){
@@ -11,8 +11,6 @@ export default function (){
     let [isCounting, setIsCounting] = useState(false);
     let millisecondsPaused = useRef(0);
     let lastStopwatchToggleTime = useRef(null);
-
-    const change = (x) => !x;
     
     let getShowTime = function() {
       let currentTime = Date.now();
@@ -22,7 +20,7 @@ export default function (){
     
     const startStop = function() {
       const currentTime = Date.now();
-      setIsCounting(change);
+      setIsCounting((x) => !x);
   
       if (countingIntervalId.current != null) {
         // stopping
@@ -80,6 +78,9 @@ export default function (){
       //newContent.lap= laptime;
       lapTimes.push(laptime);
     }
+
+    // clean up the interval after unmounting
+    useEffect(() => { clearInterval(countingIntervalId.current) }, []);
 
     return { lapTimes, timerText, startStop, resetLap, isCounting}
   }
