@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import useCounter from './useCounter.js';
 
@@ -10,25 +9,28 @@ function Watch() {
     const resetLapButtonText = isCounting ? "Lap" : "Reset";
     const children = lapTimes.map((data, idx) =>{
         return (
-          <li id={idx}>
-            <label class='left'>Lap {idx}</label>
-            <label class='right'>{data}</label>
-          </li>
+          <tr key={idx}>
+            <td>Lap {idx}</td>
+            <td>{data}</td>
+          </tr>
         );
       })
 
+  const toggleButtonColorClass = isCounting ? "started" : "stopped"
+  const resetLapButtonDisabled = !isCounting && timerText === "00:00.00";
+
   return (
     <div className="App">
-        <h1 class="display">{timerText}</h1>
-        <div class="button_container">
-            <div class="resetlap">
-                <button onClick={resetLap} id="reset" class="resetbtn">{resetLapButtonText}</button>
-            </div>
-            <div class="startstop">
-                <button onClick={startStop} id="start" class="startbtn">{startStopButtonText}</button>
-            </div>
-        </div>
-        <div class="laplist" id="laps">{children}</div>
+      <h1 id="timer">{timerText}</h1>
+      <div id="actionButtons">
+        <button id="lapResetButton" disabled={resetLapButtonDisabled} onClick={resetLap}>{resetLapButtonText}</button>
+        <button id="toggleButton" className={toggleButtonColorClass} onClick={startStop}>{startStopButtonText}</button>
+      </div>
+      <div id="lapTableDiv">
+        <table id="lapTable">
+          <tbody>{children}</tbody>
+        </table>
+      </div>
     </div>
   );
 }
