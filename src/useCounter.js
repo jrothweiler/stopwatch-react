@@ -27,7 +27,7 @@ export default function () {
         // stopping
         clearInterval(countingIntervalId.current);
         countingIntervalId.current = null;
-
+        
       } else {
         // starting
         if (startTime.current == null) {
@@ -38,6 +38,7 @@ export default function () {
         }
         
         countingIntervalId.current = setInterval(getShowTime, 10);
+        
       }
       lastStopwatchToggleTime.current = currentTime;
     }
@@ -45,7 +46,6 @@ export default function () {
     const resetLap = function() {
       if (countingIntervalId.current != null) {
         // lap
-        //alert("lap");
         logLap();
       } else {
         // reset
@@ -63,21 +63,17 @@ export default function () {
       let currentTime = Date.now();
       const totalTime = currentTime - startTime.current - millisecondsPaused.current;
     
-        if(isInitial.current){
+      if(isInitial.current){
           laptime=formatTimeForTimer(totalTime);
           //time[index]= totalTime;
           lastLapTime.current = totalTime;
           isInitial.current = false;
-      }else{
-          //time[index]=difference-lasttime;
-          
+      } else {
           laptime=formatTimeForTimer(totalTime-lastLapTime.current);
           lastLapTime.current = totalTime;
       }
-  
-      //const newContent = {};
-      //newContent.lap= laptime;
-      lapTimes.push(laptime);
+      
+      lapTimes.unshift(laptime);
     }
 
     // clean up the interval after unmounting
