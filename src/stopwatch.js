@@ -16,30 +16,11 @@ function Watch() {
         
         if(findMax(lapTimes)===idx&&lapTimes.length>2){
           rowStyle={color: "red"};
-          /*return (rowObject
-            <tr key={newidx} style={{color: "red"}}>
-              <td>Lap {newidx++}</td>
-              <td>{data}</td>
-            </tr>
-            
-          );*/
+          
         }else if(findMin(lapTimes)===idx&&lapTimes.length>2){
           rowStyle={color: "green"};
-          /*return (rowObject
-            <tr key={newidx} style={{color: "green"}}>
-              <td>Lap {newidx++}</td>
-              <td>{data}</td>
-            </tr>
-          );*/
-        }/*else {
           
-          return (rowObject
-            <tr key={newidx} style={{color: "white"}}>
-              <td>Lap {newidx++}</td>
-              <td>{data}</td>
-            </tr>
-          );
-        }*/
+        }
 
         let rowObject = <tr key={newidx} style={rowStyle}>
                           <td>Lap {newidx++}</td>
