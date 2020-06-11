@@ -1,19 +1,41 @@
 import React from 'react';
 import './App.css';
 import useCounter from './useCounter.js';
+import findMax from './findMax.js';
+import findMin from './findMin.js';
 
 function Watch() {
-    const { startStop, resetLap, timerText, lapTimes, isCounting } = useCounter();
+    const { startStop, resetLap, timerText, lapTimes, isCounting} = useCounter();
 
     const startStopButtonText = isCounting ? "Stop" : "Start";
     const resetLapButtonText = isCounting ? "Lap" : "Reset";
     const children = lapTimes.map((data, idx) =>{
-        return (
-          <tr key={idx}>
-            <td>Lap {idx}</td>
-            <td>{data}</td>
-          </tr>
-        );
+        
+        let newidx= lapTimes.length-idx;
+        if(findMax(lapTimes)===idx&&lapTimes.length>2){
+          return (
+            <tr key={newidx} style={{color: "red"}}>
+              <td>Lap {newidx++}</td>
+              <td>{data}</td>
+            </tr>
+            
+          );
+        }else if(findMin(lapTimes)===idx&&lapTimes.length>2){
+          return (
+            <tr key={newidx} style={{color: "green"}}>
+              <td>Lap {newidx++}</td>
+              <td>{data}</td>
+            </tr>
+          );
+        }else {
+          return (
+            <tr key={newidx} style={{color: "white"}}>
+              <td>Lap {newidx++}</td>
+              <td>{data}</td>
+            </tr>
+          );
+        }
+        
       })
 
   const toggleButtonColorClass = isCounting ? "started" : "stopped"
