@@ -1,14 +1,15 @@
 import {useState, useRef, useEffect} from 'react';
 import formatTimeForTimer from './formatTimeForTimer.js';
 
-export default function (){
-    let countingIntervalId = useRef(null);
-    let startTime = useRef(null);
+export default function () {
     let [lapTimes, setLapTimes] = useState([]);
     let [timerText, setTimerText] = useState('00:00.00');
+    let [isCounting, setIsCounting] = useState(false);
+
+    let countingIntervalId = useRef(null);
+    let startTime = useRef(null);
     let lastLapTime = useRef(0);
     let isInitial = useRef(true);
-    let [isCounting, setIsCounting] = useState(false);
     let millisecondsPaused = useRef(0);
     let lastStopwatchToggleTime = useRef(null);
     
@@ -57,7 +58,7 @@ export default function (){
       }
     }
   
-    const logLap = function(){
+    const logLap = function() {
       let laptime;
       let currentTime = Date.now();
       const totalTime = currentTime - startTime.current - millisecondsPaused.current;
