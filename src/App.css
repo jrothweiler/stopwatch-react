@@ -13,14 +13,17 @@
 body {
   background-color: black;
   color: white;
-  max-width: 250px;
+  margin-left: auto!important;
+  margin-right: auto!important;
+  width: 90%;
 }
 
 #timer {
   height: 200px;
   line-height: 200px;
-  font-size: 64px;
+  font-size: 88px;
   font-family: "Helvetica Neue";
+  text-align: center;
 }
 
 #actionButtons {

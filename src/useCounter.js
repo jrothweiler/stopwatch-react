@@ -11,6 +11,7 @@ export default function (){
     let [isCounting, setIsCounting] = useState(false);
     let millisecondsPaused = useRef(0);
     let lastStopwatchToggleTime = useRef(null);
+    
 
     const change = (x) => !x;
     
@@ -28,7 +29,7 @@ export default function (){
         // stopping
         clearInterval(countingIntervalId.current);
         countingIntervalId.current = null;
-
+        
       } else {
         // starting
         if (startTime.current == null) {
@@ -39,6 +40,7 @@ export default function (){
         }
         
         countingIntervalId.current = setInterval(getShowTime, 10);
+        
       }
       lastStopwatchToggleTime.current = currentTime;
     }
@@ -78,7 +80,9 @@ export default function (){
   
       //const newContent = {};
       //newContent.lap= laptime;
-      lapTimes.push(laptime);
+      lapTimes.unshift(laptime);
+      
+  
     }
 
     return { lapTimes, timerText, startStop, resetLap, isCounting}
