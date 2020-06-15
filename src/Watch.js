@@ -3,13 +3,14 @@ import './App.css';
 import useCounter from './useCounter.js';
 import findMax from './findMax.js';
 import findMin from './findMin.js';
+import formatTimeForTimer from './formatTimeForTimer.js';
 
 function Watch() {
-  const { startStop, resetLap, timerText, lapTimes, isCounting} = useCounter();
-
+  //const { startStop, resetLap, timerText, lapTimes, isCounting} = useCounter();
+  const [ {isCounting, ellapsedTime}, dispatch] = useCounter();
   const startStopButtonText = isCounting ? "Stop" : "Start";
   const resetLapButtonText = isCounting ? "Lap" : "Reset";
-  const children = lapTimes.map((data, idx) =>{
+ /*const children = lapTimes.map((data, idx) =>{
     let newidx= lapTimes.length-idx;
     let rowStyle={color: "white"};
     
@@ -24,23 +25,23 @@ function Watch() {
                       <td>{data}</td>
                     </tr>
     return rowObject;
-  })
+  })*/
 
   const toggleButtonColorClass = isCounting ? "started" : "stopped";
-  const resetLapButtonDisabled = !isCounting && timerText === "00:00.00";
+  const resetLapButtonDisabled = !isCounting && ellapsedTime === 0;
 
   return (
     <div className="App">
-      <h1 id="timer">{timerText}</h1>
+      <h1 id="timer">{formatTimeForTimer(ellapsedTime)}</h1>
       <div id="actionButtons">
-        <button id="lapResetButton" disabled={resetLapButtonDisabled} onClick={resetLap}>{resetLapButtonText}</button>
-        <button id="toggleButton" className={toggleButtonColorClass} onClick={startStop}>{startStopButtonText}</button>
+        <button id="lapResetButton" disabled={resetLapButtonDisabled} onClick={() => dispatch('reset')}>{resetLapButtonText}</button>
+        <button id="toggleButton" className={toggleButtonColorClass} onClick={() => dispatch('toggle')}>{startStopButtonText}</button>
       </div>
-      <div id="lapTableDiv">
+      {/*<div id="lapTableDiv">
         <table id="lapTable">
           <tbody>{children}</tbody>
         </table>
-      </div>
+  </div>*/}
     </div>
   );
 }
