@@ -1,7 +1,7 @@
 import {useState, useRef, useEffect, useReducer} from 'react';
 //import formatTimeForTimer from './formatTimeForTimer.js';
 
-export default function () {
+let useStopWatch = () =>{
   // {ellapsedTime, isRunning}
   // dispatch 'TOGGLE' | 'RESET'
   let startTime = useRef(null);
@@ -23,13 +23,14 @@ export default function () {
   function reducer(state, action) {
     switch (action) {
       case 'toggle':
-        return {...state, isInitial:false, isCounting: !state.isCounting};
+        return {isCounting: !state.isCounting};
         
       case 'reset':
-        console.log('reset log')
-        return {...state, isInitial:true};
+        return {...state, isCounting: state.isCounting, isInitial:true};
+
+      
       default:
-        throw new Error();
+        return state;
     }
   }
 
@@ -72,17 +73,52 @@ export default function () {
     }
   }, state.isInitial)
 
-  return  [{isCounting: state.isCounting, ellapsedTime, isInitial: state.isInitial}, dispatch] 
+  return  [{isCounting: state.isCounting,
+     ellapsedTime, 
+     isInitial: state.isInitial,
+    millisecondsPaused: millisecondsPaused.current, 
+    startTime: startTime.current}, dispatch] 
 }
 const useLapsStopWatch = () => {
+  let lastLapTime = useRef(0);
+  const [{ellapsedTime, isInitial, isCounting, millisecondsPaused, startTime}, dispatch] = useStopWatch();
+  
+  function lapReducer(state, action) {
+    switch (action) {
+      case 'lap':
+        let currentTime = Date.now();
+        let totalTime = currentTime - startTime - millisecondsPaused- lastLapTime.current;
+        console.log('lap log');
+        return {lapTimes: [totalTime, ...state.lapTimes]}
+
+      
+      default:
+        dispatch(action);
+    }
+  }
+  
+  let [lapState, lapDispatch] = useReducer(lapReducer, {
+    lapTimes: []
+  });
+
   // useReducer
-  //const [{ellapsedTime, isRunning}, dispatch] = useStopWatch()
+  
   // ellapsedTime
   // isRunning
   // laps
   // dispatch 'TOGGLE' | 'RESET_LAP'
+
+  useEffect(() => {
+    lastLapTime.current = lapState.lapTimes[0] || 0
+  }, [lapState.lapTimes]);
+
+  
+  return [{isCounting: isCounting,
+    ellapsedTime, 
+    isInitial: isInitial, lapTimes:lapState.lapTimes}, lapDispatch];
 }
 
+export default useLapsStopWatch;
 
 /*export default function () {
     let [lapTimes, setLapTimes] = useState([]);
