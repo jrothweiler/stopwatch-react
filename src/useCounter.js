@@ -1,86 +1,114 @@
-import {useState, useRef, useEffect} from 'react';
-import formatTimeForTimer from './formatTimeForTimer.js';
+import {useState, useRef, useEffect, useReducer} from 'react';
 
-export default function () {
-    let [lapTimes, setLapTimes] = useState([]);
-    let [timerText, setTimerText] = useState('00:00.00');
-    let [isCounting, setIsCounting] = useState(false);
+let useStopWatch = () =>{
+  let startTime = useRef(null);
+  let millisecondsPaused = useRef(0);
+  let lastStopwatchToggleTime = useRef(null);
+  let countingIntervalId = useRef(null);
+  let [ellapsedTime, setEllapsedTime] = useState(0);
 
-    let countingIntervalId = useRef(null);
-    let startTime = useRef(null);
-    let lastLapTime = useRef(0);
-    let isInitial = useRef(true);
-    let millisecondsPaused = useRef(0);
-    let lastStopwatchToggleTime = useRef(null);
+  let isSecondTime = useRef(false);
+
+  let getShowTime = function() {
+    let currentTime = Date.now();
+    setEllapsedTime(currentTime - startTime.current - millisecondsPaused.current)
     
-    let getShowTime = function() {
-      let currentTime = Date.now();
-      const totalTime = currentTime - startTime.current - millisecondsPaused.current;
-      setTimerText(formatTimeForTimer(totalTime));
-    };
     
-    const startStop = function() {
-      const currentTime = Date.now();
-      setIsCounting((x) => !x);
-  
-      if (countingIntervalId.current != null) {
-        // stopping
-        clearInterval(countingIntervalId.current);
-        countingIntervalId.current = null;
+  };
+
+  function reducer(state, action) {
+    switch (action) {
+      case 'toggle':
+        return {isCounting: !state.isCounting};
         
-      } else {
-        // starting
-        if (startTime.current == null) {
-          startTime.current = currentTime;
-        } else {
-          const pauseTime = currentTime - lastStopwatchToggleTime.current;
-          millisecondsPaused.current += pauseTime;
-        }
-        
-        countingIntervalId.current = setInterval(getShowTime, 10);
-        
-      }
-      lastStopwatchToggleTime.current = currentTime;
-    }
-  
-    const resetLap = function() {
-      if (countingIntervalId.current != null) {
-        // lap
-        logLap();
-      } else {
-        // reset
-        startTime.current = null;
-        setTimerText('00:00.00');
-        setLapTimes([]);
-        isInitial.current= true;
-        lastLapTime.current = 0;
-        millisecondsPaused.current = 0;
-      }
-    }
-  
-    const logLap = function() {
-      let laptime;
-      let currentTime = Date.now();
-      const totalTime = currentTime - startTime.current - millisecondsPaused.current;
-    
-      if(isInitial.current){
-          laptime=formatTimeForTimer(totalTime);
-          //time[index]= totalTime;
-          lastLapTime.current = totalTime;
-          isInitial.current = false;
-      } else {
-          laptime=formatTimeForTimer(totalTime-lastLapTime.current);
-          lastLapTime.current = totalTime;
-      }
+      case 'reset':
+        return {...state, isCounting: state.isCounting, isInitial:true};
+
       
-      lapTimes.unshift(laptime);
+      default:
+        return state;
     }
-
-    // clean up the interval after unmounting
-    useEffect(() => { clearInterval(countingIntervalId.current) }, []);
-
-    return { lapTimes, timerText, startStop, resetLap, isCounting}
   }
 
+  let initialState = {isCounting : false, isInitial: true};
+  const [state, dispatch] = useReducer(reducer, initialState);
+  useEffect(() => {
+    if (isSecondTime.current) {
+      let currentTime= Date.now();
+      if (!state.isCounting) {
+        console.log("if branch")
+          // stopping
+          clearInterval(countingIntervalId.current);
+          countingIntervalId.current = null;
+      }else{
+          // starting
+          console.log("else branch")
+          if (startTime.current == null) {
+            startTime.current = currentTime;
+          } else {
+            const pauseTime = currentTime - lastStopwatchToggleTime.current;
+            millisecondsPaused.current += pauseTime;
+          }
+          
+          countingIntervalId.current = setInterval(getShowTime, 10);
+      }
+      lastStopwatchToggleTime.current = Date.now();
+    } else {
+      isSecondTime.current = true;
+      console.log('test');
+    }
+    
+  }, [state.isCounting]);
 
+  useEffect(() => {
+    if (state.isInitial) {
+      setEllapsedTime(0);
+      lastStopwatchToggleTime.current = 0;
+      millisecondsPaused.current = 0;
+      startTime.current = null;
+    }
+  }, [state.isInitial])
 
+  return  [{isCounting: state.isCounting,
+     ellapsedTime, 
+     isInitial: state.isInitial,
+    millisecondsPaused: millisecondsPaused.current, 
+    startTime: startTime.current}, dispatch] 
+}
+const useLapsStopWatch = () => {
+  let lastLapTime = useRef(0);
+  const [{ellapsedTime, isInitial, isCounting, millisecondsPaused, startTime}, dispatch] = useStopWatch();
+  
+  function lapReducer(state, action) {
+    switch (action) {
+      case 'lap':
+        let currentTime = Date.now();
+        let totalTime = currentTime - startTime - millisecondsPaused- lastLapTime.current;
+        return {lapTimes: [totalTime, ...state.lapTimes]}
+      case 'reset':
+        return { lapTimes: [] }
+
+      
+      default:
+        return state;
+    }
+  }
+  
+  let [lapState, lapDispatch] = useReducer(lapReducer, {
+    lapTimes: []
+  });
+
+  useEffect(() => {
+    lastLapTime.current = lapState.lapTimes.reduce((acc, b) => acc + b, 0)
+  }, [lapState.lapTimes]);
+
+  
+  return [{isCounting: isCounting,
+    ellapsedTime, 
+    isInitial: isInitial, lapTimes:lapState.lapTimes}, (action) => {
+      lapDispatch(action);
+      dispatch(action);
+    }];
+}
+
+export default useLapsStopWatch;
