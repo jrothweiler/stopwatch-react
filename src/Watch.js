@@ -1,12 +1,9 @@
 import React from 'react';
 import './App.css';
 import useCounter from './useCounter.js';
-//import findMax from './findMax.js';
-//import findMin from './findMin.js';
 import formatTimeForTimer from './formatTimeForTimer.js';
 
 function Watch() {
-  //const { startStop, resetLap, timerText, lapTimes, isCounting} = useCounter();
   const [ {isCounting, ellapsedTime, lapTimes}, dispatch] = useCounter();
   const startStopButtonText = isCounting ? "Stop" : "Start";
   const resetLapButtonText = isCounting ? "Lap" : "Reset";
