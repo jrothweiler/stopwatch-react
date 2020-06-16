@@ -27,7 +27,7 @@ function Watch() {
 
     let rowObject = <tr key={newidx} style={rowStyle}>
                       <td>Lap {newidx++}</td>
-                      <td>{data}</td>
+                      <td>{formatTimeForTimer(data)}</td>
                     </tr>
     return rowObject;
   })

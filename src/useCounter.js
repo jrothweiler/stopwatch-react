@@ -71,7 +71,7 @@ let useStopWatch = () =>{
       millisecondsPaused.current = 0;
       startTime.current = null;
     }
-  }, state.isInitial)
+  }, [state.isInitial])
 
   return  [{isCounting: state.isCounting,
      ellapsedTime, 
@@ -88,12 +88,13 @@ const useLapsStopWatch = () => {
       case 'lap':
         let currentTime = Date.now();
         let totalTime = currentTime - startTime - millisecondsPaused- lastLapTime.current;
-        console.log('lap log');
         return {lapTimes: [totalTime, ...state.lapTimes]}
+      case 'reset':
+        return { lapTimes: [] }
 
       
       default:
-        dispatch(action);
+        return state;
     }
   }
   
@@ -109,13 +110,16 @@ const useLapsStopWatch = () => {
   // dispatch 'TOGGLE' | 'RESET_LAP'
 
   useEffect(() => {
-    lastLapTime.current = lapState.lapTimes[0] || 0
+    lastLapTime.current = lapState.lapTimes.reduce((acc, b) => acc + b, 0)
   }, [lapState.lapTimes]);
 
   
   return [{isCounting: isCounting,
     ellapsedTime, 
-    isInitial: isInitial, lapTimes:lapState.lapTimes}, lapDispatch];
+    isInitial: isInitial, lapTimes:lapState.lapTimes}, (action) => {
+      lapDispatch(action);
+      dispatch(action);
+    }];
 }
 
 export default useLapsStopWatch;
