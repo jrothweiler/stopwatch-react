@@ -8,6 +8,7 @@ function Watch() {
   const startStopButtonText = isCounting ? "Stop" : "Start";
   const resetLapButtonText = isCounting ? "Lap" : "Reset";
   const resetBtnOnClick= isCounting ? 'lap' : 'reset';
+  
   const min = lapTimes.length < 2 ? null : Math.min(...lapTimes)
   const max = lapTimes.length < 2 ? null : Math.max(...lapTimes)
   
@@ -41,7 +42,7 @@ function Watch() {
       </div>
       <div id="lapTableDiv">
         <table id="lapTable">
-          <tbody>{children}</tbody>
+          {<tbody>{children}</tbody>}
         </table>
   </div>
     </div>
