@@ -1,4 +1,4 @@
-import {useState, useRef, useEffect, useReducer} from 'react';
+import {useEffect, useReducer} from 'react';
 
 
 
@@ -17,7 +17,7 @@ let useStopWatch = () =>{
         };
 
       case 'tick' :
-        return {... state, ellapsedTime: payload - state.startTime - state.millisecondsPaused };
+        return {...state, ellapsedTime: payload - state.startTime - state.millisecondsPaused };
 
       case 'reset':
         return {...state, startTime: null, lastStopwatchToggleTime: null, ellapsedTime: 0, millisecondsPaused: 0 };
