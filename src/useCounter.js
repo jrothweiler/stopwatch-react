@@ -1,114 +1,80 @@
-import {useState, useRef, useEffect, useReducer} from 'react';
+import { useState, useEffect, useReducer } from "react";
 
-let useStopWatch = () =>{
-  let startTime = useRef(null);
-  let millisecondsPaused = useRef(0);
-  let lastStopwatchToggleTime = useRef(null);
-  let countingIntervalId = useRef(null);
-  let [ellapsedTime, setEllapsedTime] = useState(0);
+const initialState = {
+  diffStartTime: 0,
+  lastTick: 0,
+};
 
-  let isSecondTime = useRef(false);
+function stopWatchReducer(state, { type, payload }) {
+  switch (type) {
+    case "toggle": {
+      return {
+        lastTick: payload,
+        diffStartTime:
+          state.diffStartTime <= 0
+            ? state.diffStartTime + payload
+            : state.diffStartTime - payload,
+      };
+    }
+    case "tick": {
+      return { ...state, lastTick: payload };
+    }
+    case "reset":
+      return initialState;
+    default:
+      return state;
+  }
+}
 
-  let getShowTime = function() {
-    let currentTime = Date.now();
-    setEllapsedTime(currentTime - startTime.current - millisecondsPaused.current)
-    
-    
+const useStopWatch = () => {
+  const [{ diffStartTime, lastTick }, internalDispatch] = useReducer(
+    stopWatchReducer,
+    initialState
+  );
+
+  const isCounting = diffStartTime > 0;
+  const ellapsedTime =
+    diffStartTime < 0 ? -diffStartTime : lastTick - diffStartTime;
+  const dispatch = (type) => {
+    if (type === "tick") {
+      return;
+    }
+    internalDispatch({ type, payload: Date.now() });
   };
 
-  function reducer(state, action) {
-    switch (action) {
-      case 'toggle':
-        return {isCounting: !state.isCounting};
-        
-      case 'reset':
-        return {...state, isCounting: state.isCounting, isInitial:true};
-
-      
-      default:
-        return state;
-    }
-  }
-
-  let initialState = {isCounting : false, isInitial: true};
-  const [state, dispatch] = useReducer(reducer, initialState);
   useEffect(() => {
-    if (isSecondTime.current) {
-      let currentTime= Date.now();
-      if (!state.isCounting) {
-        console.log("if branch")
-          // stopping
-          clearInterval(countingIntervalId.current);
-          countingIntervalId.current = null;
-      }else{
-          // starting
-          console.log("else branch")
-          if (startTime.current == null) {
-            startTime.current = currentTime;
-          } else {
-            const pauseTime = currentTime - lastStopwatchToggleTime.current;
-            millisecondsPaused.current += pauseTime;
-          }
-          
-          countingIntervalId.current = setInterval(getShowTime, 10);
+    if (!isCounting) return;
+
+    const token = setInterval(() => {
+      internalDispatch({ type: "tick", payload: Date.now() });
+    }, 10);
+
+    return () => {
+      clearInterval(token);
+    };
+  }, [isCounting]);
+
+  return [{ isCounting, ellapsedTime }, dispatch];
+};
+
+export default () => {
+  const [{ ellapsedTime, isCounting }, internalDispatch] = useStopWatch();
+  const [lapTimes, setLapTimes] = useState([]);
+
+  const dispatch = (event) => {
+    if (event !== "lap") {
+      internalDispatch(event);
+      if (event === "reset") {
+        setLapTimes([]);
       }
-      lastStopwatchToggleTime.current = Date.now();
-    } else {
-      isSecondTime.current = true;
-      console.log('test');
+      return;
     }
-    
-  }, [state.isCounting]);
+    setLapTimes((prev) => {
+      const totalTime = prev.reduce((a, b) => a + b, 0);
+      return [ellapsedTime - totalTime, ...prev];
+    });
+  };
 
-  useEffect(() => {
-    if (state.isInitial) {
-      setEllapsedTime(0);
-      lastStopwatchToggleTime.current = 0;
-      millisecondsPaused.current = 0;
-      startTime.current = null;
-    }
-  }, [state.isInitial])
+  return [{ ellapsedTime, isCounting, lapTimes }, dispatch];
+};
 
-  return  [{isCounting: state.isCounting,
-     ellapsedTime, 
-     isInitial: state.isInitial,
-    millisecondsPaused: millisecondsPaused.current, 
-    startTime: startTime.current}, dispatch] 
-}
-const useLapsStopWatch = () => {
-  let lastLapTime = useRef(0);
-  const [{ellapsedTime, isInitial, isCounting, millisecondsPaused, startTime}, dispatch] = useStopWatch();
-  
-  function lapReducer(state, action) {
-    switch (action) {
-      case 'lap':
-        let currentTime = Date.now();
-        let totalTime = currentTime - startTime - millisecondsPaused- lastLapTime.current;
-        return {lapTimes: [totalTime, ...state.lapTimes]}
-      case 'reset':
-        return { lapTimes: [] }
-
-      
-      default:
-        return state;
-    }
-  }
-  
-  let [lapState, lapDispatch] = useReducer(lapReducer, {
-    lapTimes: []
-  });
-
-  useEffect(() => {
-    lastLapTime.current = lapState.lapTimes.reduce((acc, b) => acc + b, 0)
-  }, [lapState.lapTimes]);
-
-  
-  return [{isCounting: isCounting,
-    ellapsedTime, 
-    isInitial: isInitial, lapTimes:lapState.lapTimes}, (action) => {
-      lapDispatch(action);
-      dispatch(action);
-    }];
-}
-
-export default useLapsStopWatch;
